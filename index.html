@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SURVEY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            position: relative;
+            width: 200px;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 10px; /* Smaller font size */
+            padding: 2px 4px; /* Adjusted padding for smaller buttons */
+            cursor: pointer;
+            margin: 8px;
+            transition: 0.2s;
+            width: 47px; /* 47px width */
+            height: 47px; /* 47px height */
+            box-sizing: border-box;
+        }
+        #noButton {
+            background-color: red;
+        }
+        #yesButton {
+            background-color: green;
+        }
+        #message {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+        }
+        #timer {
+            font-size: 20px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="buttonContainer">
+        <h2 id="questionText">Am I cute?</h2>
+        <button id="yesButton" onclick="respond('yes')">Yes</button>
+        <button id="noButton" onclick="respond('no')">No</button>
+        <div id="message">TENKS</div>
+        <div id="timer"></div>
+    </div>
+
+    <script>
+        let originalNoButtonPosition = { left: 0, top: 0 }; // Store original position of "No" button
+
+        function respond(answer) {
+            if (answer === 'yes') {
+                showMessageAndTimer(); // Show the "TENKS" message and start the timer
+            } else if (answer === 'no') {
+                moveNoButton(); // Move the "No" button to a random position
+            }
+        }
+
+        function moveNoButton() {
+            const noButton = document.getElementById('noButton');
+            const container = document.querySelector('.container');
+
+            // Calculate random positions within a slightly larger area than the container
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const buttonWidth = noButton.offsetWidth;
+            const buttonHeight = noButton.offsetHeight;
+
+            // Increase the range of movement but limit it to 1.2 times the container's width and height
+            const maxLeft = containerWidth * 1.2; // Allow up to 1.2 times the container's width
+            const maxTop = containerHeight * 1.2; // Allow up to 1.2 times the container's height
+
+            const randomLeft = Math.random() * (maxLeft - buttonWidth);
+            const randomTop = Math.random() * (maxTop - buttonHeight);
+
+            // Move the "No" button to the new random position
+            noButton.style.position = "absolute"; // Make sure it moves freely
+            noButton.style.left = `${randomLeft}px`;
+            noButton.style.top = `${randomTop}px`;
+        }
+
+        function showMessageAndTimer() {
+            const message = document.getElementById('message');
+            const timer = document.getElementById('timer');
+            const yesButton = document.getElementById('yesButton');
+            const noButton = document.getElementById('noButton');
+            const questionText = document.getElementById('questionText'); // The "Am I cute?" text
+
+            // Hide the "Am I cute?" text
+            questionText.style.display = 'none';
+
+            // Hide buttons and show the message
+            yesButton.style.display = 'none';
+            noButton.style.display = 'none';
+            message.style.display = 'block';
+            timer.style.display = 'block';
+
+            // Start the timer
+            let countdown = 3;
+            timer.textContent = countdown + " seconds";
+
+            const interval = setInterval(() => {
+                countdown--;
+                timer.textContent = countdown + " seconds";
+                if (countdown === 0) {
+                    clearInterval(interval);
+                    resetPage(); // Reset the page after the timer
+                }
+            }, 1000);
+        }
+
+        function resetPage() {
+            const message = document.getElementById('message');
+            const timer = document.getElementById('timer');
+            const yesButton = document.getElementById('yesButton');
+            const noButton = document.getElementById('noButton');
+            const questionText = document.getElementById('questionText'); // The "Am I cute?" text
+
+            // Reset everything to the original state
+            message.style.display = 'none';
+            timer.style.display = 'none';
+            yesButton.style.display = 'inline-block';
+            noButton.style.display = 'inline-block';
+            noButton.style.position = 'relative'; // Reset to normal position
+            questionText.style.display = 'block'; // Show the question text again
+
+            // Reset the "No" button's position to the original position
+            noButton.style.left = '0';
+            noButton.style.top = '0';
+        }
+
+        // Initialize the original position of the "No" button
+        window.onload = () => {
+            const noButton = document.getElementById('noButton');
+            const rect = noButton.getBoundingClientRect();
+            originalNoButtonPosition = { left: rect.left, top: rect.top };
+        }
+    </script>
+</body>
+</html>
